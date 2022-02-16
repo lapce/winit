@@ -123,6 +123,8 @@ impl WindowState {
             current_theme,
             preferred_theme,
             high_surrogate: None,
+            key_event_builder: KeyEventBuilder::default(),
+            ime_handler: MinimalIme::default(),
             window_flags: WindowFlags::empty(),
         }
     }

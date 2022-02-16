@@ -1105,6 +1105,10 @@ impl UnownedWindow {
         handle.ns_view = *self.ns_view as *mut _;
         RawWindowHandle::AppKit(handle)
     }
+
+    pub fn reset_dead_keys(&self) {
+        // (Artur) I couldn't find a way to implement this.
+    }
 }
 
 impl WindowExtMacOS for UnownedWindow {

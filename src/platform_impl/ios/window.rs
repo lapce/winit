@@ -314,6 +314,10 @@ impl Inner {
         handle.ui_view_controller = self.view_controller as _;
         RawWindowHandle::UiKit(handle)
     }
+
+    pub fn reset_dead_keys(&self) {
+        // Noop
+    }
 }
 
 pub struct Window {
