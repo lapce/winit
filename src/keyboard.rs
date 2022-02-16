@@ -175,11 +175,12 @@ pub enum NativeKeyCode {
     Unidentified,
     Windows(u16),
     MacOS(u32),
-    XKB(u32),
+    XkbCode(u32),
+    XkbSym(u32),
 }
 impl std::fmt::Debug for NativeKeyCode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        use NativeKeyCode::{MacOS, Unidentified, Windows, XKB};
+        use NativeKeyCode::{MacOS, Unidentified, Windows, XkbCode, XkbSym};
         let mut debug_tuple;
         match self {
             Unidentified => {
@@ -193,9 +194,13 @@ impl std::fmt::Debug for NativeKeyCode {
                 debug_tuple = f.debug_tuple(name_of!(MacOS));
                 debug_tuple.field(v);
             }
-            XKB(v) => {
-                debug_tuple = f.debug_tuple(name_of!(XKB));
-                debug_tuple.field(v);
+            XkbCode(v) => {
+                debug_tuple = f.debug_tuple(name_of!(XkbCode));
+                debug_tuple.field(&format_args!("0x{:04X}", v));
+            }
+            XkbSym(v) => {
+                debug_tuple = f.debug_tuple(name_of!(XkbSym));
+                debug_tuple.field(&format_args!("0x{:04X}", v));
             }
         }
         debug_tuple.finish()
@@ -536,6 +541,9 @@ pub enum KeyCode {
     AudioVolumeMute,
     AudioVolumeUp,
     WakeUp,
+    // Legacy modifier key. Also called "Super" in certain places.
+    Meta,
+    // Legacy modifier key.
     Hyper,
     Turbo,
     Abort,
@@ -731,6 +739,9 @@ pub enum Key<'a> {
     /// The Symbol modifier key (used on some virtual keyboards).
     Symbol,
     SymbolLock,
+    // Legacy modifier key. Also called "Super" in certain places.
+    Meta,
+    // Legacy modifier key.
     Hyper,
     /// Used to enable "super" modifier function for interpreting concurrent or subsequent keyboard
     /// input. This key value is used for the "Windows Logo" key and the Apple `Command` or `⌘` key.
