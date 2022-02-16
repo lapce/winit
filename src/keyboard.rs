@@ -1418,6 +1418,12 @@ impl<'a> Key<'a> {
     }
 }
 
+impl Default for KeyCode {
+    fn default() -> Self {
+        KeyCode::Unidentified(NativeKeyCode::Unidentified)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum KeyLocation {

@@ -549,7 +549,6 @@ extern "C" fn insert_text(this: &Object, _sel: Sel, string: id, _replacement_ran
             .chars()
             .filter(|c| !is_corporate_character(*c))
             .collect();
-        state.is_key_down = true;
 
         // We don't need this now, but it's here if that changes.
         //let event: id = msg_send![NSApp(), currentEvent];
@@ -690,7 +689,7 @@ extern "C" fn key_down(this: &mut Object, _sel: Sel, event: id) {
 
         update_potentially_stale_modifiers(state, event);
 
-        let pass_along = !is_repeat || !state.is_key_down;
+        let pass_along = !is_repeat;
         if pass_along {
             // See below for why we do this.
             clear_marked_text(this);
@@ -738,8 +737,6 @@ extern "C" fn key_up(this: &Object, _sel: Sel, event: id) {
     unsafe {
         let state_ptr: *mut c_void = *this.get_ivar("winitState");
         let state = &mut *(state_ptr as *mut ViewState);
-
-        state.is_key_down = false;
 
         update_potentially_stale_modifiers(state, event);
 

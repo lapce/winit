@@ -507,7 +507,7 @@ impl KeyCodeExtScancode for KeyCode {
             // 0xA is the caret (^) an macOS's German QERTZ layout. This key is at the same location as
             // backquote (`) on Windows' US layout.
             0xa => KeyCode::Backquote,
-            _ => KeyCode::Unidentified(NativeKeyCode::MacOS(scancode as u16)),
+            _ => KeyCode::Unidentified(NativeKeyCode::MacOS(scancode as u32)),
         }
     }
 }

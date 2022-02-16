@@ -73,14 +73,14 @@ pub fn get_modifierless_char(scancode: u16) -> Key<'static> {
         input_source = ffi::TISCopyCurrentKeyboardLayoutInputSource();
         if input_source.is_null() {
             log::error!("`TISCopyCurrentKeyboardLayoutInputSource` returned null ptr");
-            return Key::Unidentified(NativeKeyCode::MacOS(scancode));
+            return Key::Unidentified(NativeKeyCode::MacOS(scancode as u32));
         }
         let layout_data =
             ffi::TISGetInputSourceProperty(input_source, ffi::kTISPropertyUnicodeKeyLayoutData);
         if layout_data.is_null() {
             CFRelease(input_source as *mut c_void);
             log::error!("`TISGetInputSourceProperty` returned null ptr");
-            return Key::Unidentified(NativeKeyCode::MacOS(scancode));
+            return Key::Unidentified(NativeKeyCode::MacOS(scancode as u32));
         }
         layout = CFDataGetBytePtr(layout_data) as *const ffi::UCKeyboardLayout;
     }
@@ -111,11 +111,11 @@ pub fn get_modifierless_char(scancode: u16) -> Key<'static> {
             "`UCKeyTranslate` returned with the non-zero value: {}",
             translate_result
         );
-        return Key::Unidentified(NativeKeyCode::MacOS(scancode));
+        return Key::Unidentified(NativeKeyCode::MacOS(scancode as u32));
     }
     if result_len == 0 {
         log::error!("`UCKeyTranslate` was succesful but gave a string of 0 length.");
-        return Key::Unidentified(NativeKeyCode::MacOS(scancode));
+        return Key::Unidentified(NativeKeyCode::MacOS(scancode as u32));
     }
     let chars = String::from_utf16_lossy(&string[0..result_len as usize]);
     Key::Character(insert_or_get_key_str(chars))
@@ -261,7 +261,7 @@ pub fn code_to_key(code: KeyCode, scancode: u16) -> Key<'static> {
         KeyCode::ArrowRight => Key::ArrowRight,
         KeyCode::ArrowDown => Key::ArrowDown,
         KeyCode::ArrowUp => Key::ArrowUp,
-        _ => Key::Unidentified(NativeKeyCode::MacOS(scancode)),
+        _ => Key::Unidentified(NativeKeyCode::MacOS(scancode as u32)),
     }
 }
 
@@ -309,10 +309,10 @@ pub fn extra_function_key_to_code(scancode: u16, string: &str) -> KeyCode {
             0xf719 => KeyCode::F22,
             0xf71a => KeyCode::F23,
             0xf71b => KeyCode::F24,
-            _ => KeyCode::Unidentified(NativeKeyCode::MacOS(scancode)),
+            _ => KeyCode::Unidentified(NativeKeyCode::MacOS(scancode as u32)),
         }
     } else {
-        KeyCode::Unidentified(NativeKeyCode::MacOS(scancode))
+        KeyCode::Unidentified(NativeKeyCode::MacOS(scancode as u32))
     }
 }
 
