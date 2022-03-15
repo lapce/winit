@@ -172,22 +172,22 @@ pub fn create_key_event(
         //println!("Couldn't get key from code: {:?}", physical_key);
         key_without_modifiers = get_modifierless_char(scancode);
 
-        let modifiers = unsafe { NSEvent::modifierFlags(ns_event) };
-        let has_ctrl = modifiers.contains(NSEventModifierFlags::NSControlKeyMask);
-        let has_cmd = modifiers.contains(NSEventModifierFlags::NSCommandKeyMask);
+        // let modifiers = unsafe { NSEvent::modifierFlags(ns_event) };
+        // let has_ctrl = modifiers.contains(NSEventModifierFlags::NSControlKeyMask);
+        // let has_cmd = modifiers.contains(NSEventModifierFlags::NSCommandKeyMask);
 
         // Not checking for alt here because we DO want to include its effect in the key.
         // For example if -on the Germay layout- one presses alt+8, the logical key should be "{"
         // Also not checking if this is a release event because then this issue would still affect the key release.
-        if has_cmd || has_ctrl || text_with_all_modifiers.is_none() {
-            let modifierless_chars = match key_without_modifiers {
-                Key::Character(ch) => ch,
-                _ => "",
-            };
-            logical_key = get_logical_key_char(ns_event, modifierless_chars);
-        } else {
-            logical_key = Key::Character(text_with_all_modifiers.unwrap());
-        }
+        //if has_cmd || has_ctrl || text_with_all_modifiers.is_none() {
+        let modifierless_chars = match key_without_modifiers {
+            Key::Character(ch) => ch,
+            _ => "",
+        };
+        logical_key = get_logical_key_char(ns_event, modifierless_chars);
+        // } else {
+        //     logical_key = Key::Character(text_with_all_modifiers.unwrap());
+        // }
     }
     let text = if in_ime || !is_press {
         None
