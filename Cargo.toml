@@ -1,15 +1,13 @@
 [package]
-name = "winit"
+name = "floem-winit"
 version = "0.29.4"
 authors = ["The winit contributors", "Pierre Krieger <pierre.krieger1708@gmail.com>"]
-description = "Cross-platform window creation library."
+description = "Unofficial winit fork for Floem"
 edition = "2021"
-keywords = ["windowing"]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/rust-windowing/winit"
+repository = "https://github.com/lapce/winit"
 documentation = "https://docs.rs/winit"
-categories = ["gui"]
 rust-version = "1.65.0"
 
 [package.metadata.docs.rs]
