@@ -8,6 +8,7 @@ use objc2::{declare_class, msg_send, msg_send_id, mutability, ClassType};
 
 use super::app_state::AppState;
 use super::appkit::NSApplicationActivationPolicy;
+use crate::event::Event;
 
 declare_class!(
     #[derive(Debug)]
@@ -60,14 +61,16 @@ declare_class!(
         }
 
         #[method(applicationShouldHandleReopen:hasVisibleWindows:)]
-        fn should_handle_reopen(&self, _sender: &Option<&AnyObject>, _has_visible_windows: bool) -> bool {
+        fn should_handle_reopen(
+            &self,
+            _sender: &Option<&AnyObject>,
+            _has_visible_windows: bool,
+        ) -> bool {
             trace_scope!("applicationShouldHandleReopen:hasVisibleWindows:");
-
-            self.handle_event(Event::Reopen);
+            AppState::queue_event(Event::Reopen);
             // return true to preserve the default behavior, such as showing the minimized window.
             true
         }
-
     }
 );
 
