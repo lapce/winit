@@ -55,7 +55,7 @@ use windows_sys::Win32::{
             TranslateMessage, CREATESTRUCTW, GIDC_ARRIVAL, GIDC_REMOVAL, GWL_STYLE, GWL_USERDATA,
             HTCAPTION, HTCLIENT, MINMAXINFO, MNC_CLOSE, MSG, NCCALCSIZE_PARAMS, PM_REMOVE, PT_PEN,
             PT_TOUCH, RI_KEY_E0, RI_KEY_E1, RI_MOUSE_HWHEEL, RI_MOUSE_WHEEL, SC_MINIMIZE,
-            SC_RESTORE, SIZE_MAXIMIZED, SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER,
+            SC_RESTORE, SIZE_MAXIMIZED, SIZE_RESTORED, SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER,
             WHEEL_DELTA, WINDOWPOS, WM_CAPTURECHANGED, WM_CLOSE, WM_COMMAND, WM_CREATE, WM_DESTROY,
             WM_DPICHANGED, WM_ENTERSIZEMOVE, WM_EXITSIZEMOVE, WM_GETMINMAXINFO, WM_IME_COMPOSITION,
             WM_IME_ENDCOMPOSITION, WM_IME_SETCONTEXT, WM_IME_STARTCOMPOSITION, WM_INPUT,
@@ -1286,28 +1286,33 @@ unsafe fn public_window_callback_inner<T: 'static>(
         }
 
         WM_SIZE => {
-            use crate::event::WindowEvent::Resized;
-            let w = super::loword(lparam as u32) as u32;
-            let h = super::hiword(lparam as u32) as u32;
+            // handle spurious WM_SIZE messages
+            // see https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-size#parameters
+            // and https://devblogs.microsoft.com/oldnewthing/20050210-00/?p=36483
+            if wparam == SIZE_RESTORED as usize || wparam == SIZE_MAXIMIZED as usize {
+                use crate::event::WindowEvent::Resized;
+                let w = super::loword(lparam as u32) as u32;
+                let h = super::hiword(lparam as u32) as u32;
 
-            let physical_size = PhysicalSize::new(w, h);
-            let event = Event::WindowEvent {
-                window_id: RootWindowId(WindowId(window)),
-                event: Resized(physical_size),
-            };
+                let physical_size = PhysicalSize::new(w, h);
+                let event = Event::WindowEvent {
+                    window_id: RootWindowId(WindowId(window)),
+                    event: Resized(physical_size),
+                };
 
-            {
-                let mut w = userdata.window_state_lock();
-                // See WindowFlags::MARKER_RETAIN_STATE_ON_SIZE docs for info on why this `if` check exists.
-                if !w
-                    .window_flags()
-                    .contains(WindowFlags::MARKER_RETAIN_STATE_ON_SIZE)
                 {
-                    let maximized = wparam == SIZE_MAXIMIZED as usize;
-                    w.set_window_flags_in_place(|f| f.set(WindowFlags::MAXIMIZED, maximized));
+                    let mut w = userdata.window_state_lock();
+                    // See WindowFlags::MARKER_RETAIN_STATE_ON_SIZE docs for info on why this `if` check exists.
+                    if !w
+                        .window_flags()
+                        .contains(WindowFlags::MARKER_RETAIN_STATE_ON_SIZE)
+                    {
+                        let maximized = wparam == SIZE_MAXIMIZED as usize;
+                        w.set_window_flags_in_place(|f| f.set(WindowFlags::MAXIMIZED, maximized));
+                    }
                 }
+                userdata.send_event(event);
             }
-            userdata.send_event(event);
             result = ProcResult::Value(0);
         }
 
