@@ -8,6 +8,7 @@ use objc2::{declare_class, msg_send, msg_send_id, mutability, ClassType};
 
 use super::app_state::AppState;
 use super::appkit::NSApplicationActivationPolicy;
+use crate::event::Event;
 
 declare_class!(
     #[derive(Debug)]
@@ -57,6 +58,18 @@ declare_class!(
             trace_scope!("applicationWillTerminate:");
             // TODO: Notify every window that it will be destroyed, like done in iOS?
             AppState::internal_exit();
+        }
+
+        #[method(applicationShouldHandleReopen:hasVisibleWindows:)]
+        fn should_handle_reopen(
+            &self,
+            _sender: &Option<&AnyObject>,
+            _has_visible_windows: bool,
+        ) -> bool {
+            trace_scope!("applicationShouldHandleReopen:hasVisibleWindows:");
+            AppState::queue_event(Event::Reopen);
+            // return true to preserve the default behavior, such as showing the minimized window.
+            true
         }
     }
 );
