@@ -22,6 +22,7 @@ mod device;
 mod error;
 mod event_loop;
 mod keyboard;
+mod menu;
 mod monitor;
 mod window;
 
@@ -33,6 +34,7 @@ pub use self::error::OsError;
 pub(crate) use self::event_loop::{
     EventLoop, EventLoopProxy, EventLoopWindowTarget, PlatformSpecificEventLoopAttributes,
 };
+pub(crate) use self::menu::Menu;
 pub use self::monitor::{MonitorHandle, VideoMode};
 pub use self::window::{PlatformSpecificWindowBuilderAttributes, Window, WindowId};
 
