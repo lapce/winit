@@ -212,7 +212,7 @@ atomic-waker = "1"
 js-sys = "0.3.64"
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
-web-time = "0.2"
+web-time = "1"
 
 [target.'cfg(target_family = "wasm")'.dev-dependencies]
 console_log = "1"
