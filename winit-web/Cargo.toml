@@ -9,7 +9,7 @@ include = [
     "README.md",
 ]
 license.workspace = true
-name = "winit-web"
+name = "floem-winit-web"
 repository.workspace = true
 rust-version.workspace = true
 version.workspace = true

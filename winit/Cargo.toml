@@ -1,11 +1,11 @@
 [package]
 categories = ["gui"]
-description = "Cross-platform window creation library."
-documentation = "https://docs.rs/winit"
+description = "Unofficial winit fork for Floem"
+documentation = "https://docs.rs/floem-winit"
 edition.workspace = true
 keywords = ["windowing"]
 license.workspace = true
-name = "winit"
+name = "floem-winit"
 repository.workspace = true
 rust-version.workspace = true
 version.workspace = true
